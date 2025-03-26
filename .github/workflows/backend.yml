@@ -1,14 +1,10 @@
 name: Deploy Backend to Railway
 
-on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'backend/**'
+on: [push]
 
 jobs:
   deploy:
+    if: github.ref == 'refs/heads/main' && contains(github.event.head_commit.modified, 'backend/')
     runs-on: ubuntu-latest
     defaults:
       run:

@@ -1,11 +1,6 @@
 name: Deploy Frontend to Vercel
 
-on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'frontend/**'
+on: [push]
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -13,6 +8,7 @@ env:
 
 jobs:
   Deploy-Production:
+    if: github.ref == 'refs/heads/main' && contains(github.event.head_commit.modified, 'frontend/')
     runs-on: ubuntu-latest
     defaults:
       run:
