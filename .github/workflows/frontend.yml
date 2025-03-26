@@ -23,23 +23,45 @@ jobs:
           echo "Workspace: ${{ github.workspace }}"
           echo "Modified files:"
           git diff --name-only HEAD^ HEAD
+          echo "Current directory structure:"
+          ls -la
+          echo "Frontend directory structure:"
+          ls -la frontend || echo "Frontend directory not found"
 
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      - name: Create Vercel Project Config
+      - name: Setup Vercel
         working-directory: ./frontend
         run: |
-          cat > .vercel/project.json << EOF
-          {
+          echo "Creating .vercel directory..."
+          mkdir -p .vercel
+          
+          echo "Writing project configuration..."
+          echo '{
             "projectId": "${{ secrets.VERCEL_PROJECT_ID }}",
             "orgId": "${{ secrets.VERCEL_ORG_ID }}"
-          }
-          EOF
+          }' > .vercel/project.json
+          
+          echo "Verifying configuration..."
+          cat .vercel/project.json
+          
+          echo "Directory structure after setup:"
+          ls -la
+          ls -la .vercel
 
       - name: Deploy to Vercel
         working-directory: ./frontend
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          npx vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --yes
+          echo "Installing Vercel CLI..."
+          npm install -g vercel
+          
+          echo "Vercel CLI version:"
+          vercel --version
+          
+          echo "Deploying to Vercel..."
+          vercel deploy --token ${{ secrets.VERCEL_TOKEN }} --prod --yes
