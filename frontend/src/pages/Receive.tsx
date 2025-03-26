@@ -73,7 +73,7 @@ export default function Receive() {
   return (
     <Box sx={{ 
       minHeight: '100vh',
-      bgcolor: '#1C1C1C',
+      bgcolor: '#FDF7F2',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -87,7 +87,7 @@ export default function Receive() {
         gap: 2
       }}>
         <Typography variant="h4" sx={{ 
-          color: 'white', 
+          color: '#1C1C1C', 
           fontWeight: 500,
           fontFamily: "'BM Hanna 11yrs old', sans-serif"
         }}>
@@ -109,9 +109,9 @@ export default function Receive() {
           p: 3,
           width: '100%',
           maxWidth: '600px',
-          bgcolor: 'rgba(255, 255, 255, 0.05)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          bgcolor: '#FFFFFF',
+          borderRadius: '16px',
+          boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.05)',
           alignSelf: 'center'
         }}
       >
@@ -126,12 +126,15 @@ export default function Receive() {
             inputProps={{ maxLength: 6 }}
             sx={{
               '& .MuiOutlinedInput-root': {
-                bgcolor: 'white',
+                bgcolor: '#F8F8F8',
                 '&:hover': {
-                  bgcolor: 'white',
+                  bgcolor: '#F8F8F8',
                 },
                 '&.Mui-focused': {
-                  bgcolor: 'white',
+                  bgcolor: '#F8F8F8',
+                  '& fieldset': {
+                    borderColor: '#C17F59',
+                  }
                 }
               }
             }}
@@ -142,10 +145,13 @@ export default function Receive() {
             fullWidth
             sx={{ 
               mt: 2,
-              bgcolor: '#1C1C1C',
+              bgcolor: '#C17F59',
               '&:hover': {
-                bgcolor: '#2C2C2C'
-              }
+                bgcolor: '#A66B48'
+              },
+              textTransform: 'none',
+              borderRadius: '8px',
+              py: 1.5
             }}
             disabled={loading || !code}
           >
@@ -161,11 +167,11 @@ export default function Receive() {
 
         {content && (
           <Box sx={{ mt: 3 }}>
-            <Typography variant="h6" gutterBottom sx={{ color: 'white' }}>
+            <Typography variant="h6" gutterBottom sx={{ color: '#1C1C1C' }}>
               Content:
             </Typography>
             {content.type === 'text' ? (
-              <Box sx={{ bgcolor: 'white', p: 2, borderRadius: 1 }}>
+              <Box sx={{ bgcolor: '#F8F8F8', p: 2, borderRadius: 1 }}>
                 <Box sx={{ 
                   display: 'flex', 
                   alignItems: 'flex-start', 
@@ -177,15 +183,19 @@ export default function Receive() {
                     sx={{ 
                       whiteSpace: 'pre-wrap',
                       flex: 1,
-                      overflowWrap: 'break-word'
+                      overflowWrap: 'break-word',
+                      color: '#1C1C1C'
                     }}
                   >
                     {content.content}
                   </Typography>
                   <IconButton
                     onClick={() => handleCopy(content.content)}
-                    color={copySuccess ? "success" : "primary"}
-                    sx={{ ml: 1 }}
+                    color={copySuccess ? "success" : "default"}
+                    sx={{ 
+                      ml: 1,
+                      color: copySuccess ? '#4CAF50' : '#C17F59'
+                    }}
                     title="Copy to clipboard"
                   >
                     <ContentCopyIcon />
@@ -210,10 +220,13 @@ export default function Receive() {
                     startIcon={<DownloadIcon />}
                     onClick={() => handleDownload(content.content, `${APP_NAME.toLowerCase()}-image-${code}.jpg`)}
                     sx={{ 
-                      bgcolor: '#1C1C1C',
+                      bgcolor: '#C17F59',
                       '&:hover': {
-                        bgcolor: '#2C2C2C'
-                      }
+                        bgcolor: '#A66B48'
+                      },
+                      textTransform: 'none',
+                      borderRadius: '8px',
+                      py: 1.5
                     }}
                   >
                     Download Image
@@ -224,7 +237,10 @@ export default function Receive() {
                     rel="noopener noreferrer"
                     sx={{ 
                       textDecoration: 'none',
-                      color: 'white'
+                      color: '#C17F59',
+                      '&:hover': {
+                        color: '#A66B48'
+                      }
                     }}
                   >
                     Open in new tab

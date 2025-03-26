@@ -103,7 +103,7 @@ export default function Send() {
   return (
     <Box sx={{ 
       minHeight: '100vh',
-      bgcolor: '#1C1C1C',
+      bgcolor: '#FDF7F2',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -117,7 +117,7 @@ export default function Send() {
         gap: 2
       }}>
         <Typography variant="h4" sx={{ 
-          color: 'white', 
+          color: '#1C1C1C', 
           fontWeight: 500,
           fontFamily: "'BM Hanna 11yrs old', sans-serif"
         }}>
@@ -138,24 +138,27 @@ export default function Send() {
         sx={{ 
           width: '100%',
           maxWidth: '600px',
-          bgcolor: 'rgba(255, 255, 255, 0.05)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          bgcolor: '#FFFFFF',
+          borderRadius: '16px',
+          boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.05)',
           alignSelf: 'center'
         }}
       >
-        <Box sx={{ borderBottom: 1, borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'rgba(0, 0, 0, 0.1)' }}>
           <Tabs 
             value={tabValue} 
             onChange={handleTabChange} 
             centered
             sx={{
               '& .MuiTab-root': {
-                color: 'rgba(255, 255, 255, 0.7)',
+                color: 'rgba(0, 0, 0, 0.6)',
                 '&.Mui-selected': {
-                  color: 'white',
+                  color: '#C17F59',
                 },
               },
+              '& .MuiTabs-indicator': {
+                backgroundColor: '#C17F59',
+              }
             }}
           >
             <Tab icon={<TextFields />} label="Text" />
@@ -177,12 +180,15 @@ export default function Send() {
               required
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  bgcolor: 'white',
+                  bgcolor: '#F8F8F8',
                   '&:hover': {
-                    bgcolor: 'white',
+                    bgcolor: '#F8F8F8',
                   },
                   '&.Mui-focused': {
-                    bgcolor: 'white',
+                    bgcolor: '#F8F8F8',
+                    '& fieldset': {
+                      borderColor: '#C17F59',
+                    }
                   }
                 }
               }}
@@ -193,10 +199,13 @@ export default function Send() {
               fullWidth
               sx={{ 
                 mt: 2,
-                bgcolor: '#1C1C1C',
+                bgcolor: '#C17F59',
                 '&:hover': {
-                  bgcolor: '#2C2C2C'
-                }
+                  bgcolor: '#A66B48'
+                },
+                textTransform: 'none',
+                borderRadius: '8px',
+                py: 1.5
               }}
               disabled={loading || !text}
             >
@@ -213,11 +222,15 @@ export default function Send() {
               fullWidth
               sx={{ 
                 mb: 2,
-                borderColor: 'rgba(255, 255, 255, 0.23)',
-                color: 'white',
+                borderColor: '#C17F59',
+                color: '#C17F59',
                 '&:hover': {
-                  borderColor: 'white',
-                }
+                  borderColor: '#A66B48',
+                  bgcolor: 'rgba(193, 127, 89, 0.04)'
+                },
+                textTransform: 'none',
+                borderRadius: '8px',
+                py: 1.5
               }}
               disabled={loading}
             >
@@ -230,7 +243,7 @@ export default function Send() {
               />
             </Button>
             {image && (
-              <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
+              <Typography variant="body2" sx={{ mb: 2, color: '#666666' }}>
                 Selected: {image.name}
               </Typography>
             )}
@@ -239,10 +252,13 @@ export default function Send() {
               variant="contained"
               fullWidth
               sx={{ 
-                bgcolor: '#1C1C1C',
+                bgcolor: '#C17F59',
                 '&:hover': {
-                  bgcolor: '#2C2C2C'
-                }
+                  bgcolor: '#A66B48'
+                },
+                textTransform: 'none',
+                borderRadius: '8px',
+                py: 1.5
               }}
               disabled={loading || !image}
             >
@@ -260,14 +276,24 @@ export default function Send() {
         {code && (
           <Alert 
             severity="success" 
-            sx={{ mx: 3, mb: 3 }}
+            sx={{ 
+              mx: 3, 
+              mb: 3,
+              '& .MuiAlert-icon': {
+                color: '#C17F59'
+              },
+              '& .MuiAlert-message': {
+                color: '#1C1C1C'
+              },
+              bgcolor: '#FDF7F2'
+            }}
             icon={<Timer />}
           >
             <Box>
               <Typography variant="body1">
                 Your code is: <strong>{code}</strong>
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="#666666">
                 Expires in: {timeLeft} seconds
               </Typography>
             </Box>
