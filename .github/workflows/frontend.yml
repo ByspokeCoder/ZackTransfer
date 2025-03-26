@@ -8,10 +8,6 @@ on:
       - 'frontend/**'
       - '.github/workflows/frontend.yml'
 
-env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
 jobs:
   Deploy-Production:
     runs-on: ubuntu-latest
@@ -46,12 +42,12 @@ jobs:
           npm install --global vercel@latest
 
       - name: Deploy to Vercel
-        working-directory: ./frontend
-        env:
+        id: deploy
+        uses: BetaHuhn/deploy-to-vercel-action@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: |
-          echo "Linking project..."
-          vercel link --token ${{ secrets.VERCEL_TOKEN }} --yes
-          
-          echo "Deploying to Vercel..."
-          vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          WORKING_DIRECTORY: ./frontend
+          PRODUCTION: true
