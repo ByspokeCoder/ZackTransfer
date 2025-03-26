@@ -1,5 +1,4 @@
 {
-  // Vercel configuration for ZackTransfer frontend
   "version": 2,
   "rewrites": [
     {
