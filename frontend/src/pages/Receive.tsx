@@ -8,8 +8,10 @@ import {
   CircularProgress,
   Alert,
   Link,
+  IconButton,
+  Tooltip,
 } from '@mui/material';
-import { Download as DownloadIcon } from '@mui/icons-material';
+import { Download as DownloadIcon, ContentCopy as ContentCopyIcon } from '@mui/icons-material';
 import axios from 'axios';
 import { APP_NAME } from '../api/config';
 import { api } from '../api/config';
@@ -19,6 +21,7 @@ export default function Receive() {
   const [content, setContent] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,6 +61,16 @@ export default function Receive() {
     }
   };
 
+  const handleCopy = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000); // Reset after 2 seconds
+    } catch (err) {
+      console.error('Failed to copy text:', err);
+    }
+  };
+
   return (
     <Paper elevation={3} sx={{ p: 3 }}>
       <form onSubmit={handleSubmit}>
@@ -93,9 +106,20 @@ export default function Receive() {
             Content:
           </Typography>
           {content.type === 'text' ? (
-            <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
-              {content.content}
-            </Typography>
+            <Box sx={{ bgcolor: 'grey.100', p: 2, borderRadius: 1 }}>
+              <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', mb: 2 }}>
+                {content.content}
+              </Typography>
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={<ContentCopyIcon />}
+                onClick={() => handleCopy(content.content)}
+                color={copySuccess ? "success" : "primary"}
+              >
+                {copySuccess ? "Copied!" : "Copy to clipboard"}
+              </Button>
+            </Box>
           ) : (
             <Box>
               <img
