@@ -12,6 +12,7 @@ import {
 import { Download as DownloadIcon } from '@mui/icons-material';
 import axios from 'axios';
 import { APP_NAME } from '../api/config';
+import { api } from '../api/config';
 
 export default function Receive() {
   const [code, setCode] = useState('');
@@ -26,7 +27,9 @@ export default function Receive() {
     setContent(null);
 
     try {
-      const response = await axios.get(`/api/transfers/${code}`);
+      const response = await axios.get(`${api.baseURL}/api/transfers/${code}`, {
+        timeout: api.timeout
+      });
       setContent(response.data);
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to retrieve content. Please try again.');
@@ -37,7 +40,10 @@ export default function Receive() {
 
   const handleDownload = async (url: string, filename: string) => {
     try {
-      const response = await axios.get(url, { responseType: 'blob' });
+      const response = await axios.get(url, { 
+        responseType: 'blob',
+        timeout: api.timeout
+      });
       const blob = new Blob([response.data]);
       const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement('a');

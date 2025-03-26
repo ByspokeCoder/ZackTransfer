@@ -84,12 +84,11 @@ export default function Send() {
         formData.append('type', 'image');
       }
 
-      const response = await axios.post('/api/transfers', formData, {
-        ...api,
+      const response = await axios.post(`${api.baseURL}/api/transfers`, formData, {
         headers: {
-          ...api.headers,
           'Content-Type': 'multipart/form-data',
         },
+        timeout: api.timeout,
       });
 
       setCode(response.data.code);
