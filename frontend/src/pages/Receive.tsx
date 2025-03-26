@@ -9,7 +9,6 @@ import {
   Alert,
   Link,
   IconButton,
-  Tooltip,
 } from '@mui/material';
 import { Download as DownloadIcon, ContentCopy as ContentCopyIcon } from '@mui/icons-material';
 import axios from 'axios';
@@ -107,14 +106,27 @@ export default function Receive() {
           </Typography>
           {content.type === 'text' ? (
             <Box sx={{ bgcolor: 'grey.100', p: 2, borderRadius: 1 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2, mb: 2 }}>
-                <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', flex: 1 }}>
+              <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'flex-start', 
+                gap: 1,
+                width: '100%'
+              }}>
+                <Typography 
+                  variant="body1" 
+                  sx={{ 
+                    whiteSpace: 'pre-wrap',
+                    flex: 1,
+                    overflowWrap: 'break-word'
+                  }}
+                >
                   {content.content}
                 </Typography>
                 <IconButton
                   onClick={() => handleCopy(content.content)}
                   color={copySuccess ? "success" : "primary"}
-                  sx={{ flexShrink: 0 }}
+                  sx={{ ml: 1 }}
+                  title="Copy to clipboard"
                 >
                   <ContentCopyIcon />
                 </IconButton>
