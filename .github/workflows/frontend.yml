@@ -8,7 +8,7 @@ env:
 
 jobs:
   Deploy-Production:
-    if: github.ref == 'refs/heads/main' && contains(github.event.head_commit.modified, 'frontend/')
+    if: github.ref == 'refs/heads/main' && (contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.modified, '.github/workflows/frontend.yml'))
     runs-on: ubuntu-latest
     defaults:
       run:

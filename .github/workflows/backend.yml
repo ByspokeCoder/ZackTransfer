@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/main' && contains(github.event.head_commit.modified, 'backend/')
+    if: github.ref == 'refs/heads/main' && (contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.modified, '.github/workflows/backend.yml'))
     runs-on: ubuntu-latest
     defaults:
       run:
