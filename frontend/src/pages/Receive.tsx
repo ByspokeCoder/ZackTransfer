@@ -86,7 +86,11 @@ export default function Receive() {
         alignItems: 'center',
         gap: 2
       }}>
-        <Typography variant="h4" sx={{ color: 'white', fontWeight: 500 }}>
+        <Typography variant="h4" sx={{ 
+          color: 'white', 
+          fontWeight: 500,
+          fontFamily: "'BM Hanna 11yrs old', sans-serif"
+        }}>
           ZackTransfer
         </Typography>
         <img 
