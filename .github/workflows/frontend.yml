@@ -35,9 +35,27 @@ jobs:
           ls -la frontend || echo "Frontend directory not found"
           echo "Git remote info:"
           git remote -v
-          echo "Git user info:"
-          git config --get user.name || echo "No user.name set"
-          git config --get user.email || echo "No user.email set"
+
+      - name: Verify Secrets
+        run: |
+          if [ -n "${{ secrets.VERCEL_TOKEN }}" ]; then
+            echo "✓ VERCEL_TOKEN is set"
+          else
+            echo "✗ VERCEL_TOKEN is missing"
+            exit 1
+          fi
+          if [ -n "${{ secrets.VERCEL_ORG_ID }}" ]; then
+            echo "✓ VERCEL_ORG_ID is set"
+          else
+            echo "✗ VERCEL_ORG_ID is missing"
+            exit 1
+          fi
+          if [ -n "${{ secrets.VERCEL_PROJECT_ID }}" ]; then
+            echo "✓ VERCEL_PROJECT_ID is set"
+          else
+            echo "✗ VERCEL_PROJECT_ID is missing"
+            exit 1
+          fi
 
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -48,9 +66,10 @@ jobs:
         working-directory: ./frontend
         run: |
           if [ ! -f "package.json" ]; then
-            echo "Error: package.json not found"
+            echo "Error: package.json not found in $(pwd)"
             exit 1
           fi
+          echo "Installing dependencies from package.json"
           npm ci
 
       - name: Deploy to Vercel
@@ -62,6 +81,3 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: ./frontend
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          alias-domains: |
-            zacktransfer.com
-            www.zacktransfer.com
