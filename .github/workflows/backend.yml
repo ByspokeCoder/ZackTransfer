@@ -1,10 +1,15 @@
 name: Deploy Backend to Railway
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend.yml'
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/main' && (contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.modified, '.github/workflows/backend.yml'))
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -13,6 +18,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Debug Info
+        run: |
+          echo "Branch: ${{ github.ref }}"
+          echo "Event: ${{ github.event_name }}"
+          echo "Modified files:"
+          git diff --name-only HEAD^ HEAD
 
       - name: Install Node.js
         uses: actions/setup-node@v3

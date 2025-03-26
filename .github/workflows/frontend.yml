@@ -1,6 +1,12 @@
 name: Deploy Frontend to Vercel
 
-on: [push]
+on: 
+  push:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend.yml'
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -8,7 +14,6 @@ env:
 
 jobs:
   Deploy-Production:
-    if: github.ref == 'refs/heads/main' && (contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.modified, '.github/workflows/frontend.yml'))
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -16,6 +21,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: Debug Info
+        run: |
+          echo "Branch: ${{ github.ref }}"
+          echo "Event: ${{ github.event_name }}"
+          echo "Modified files:"
+          git diff --name-only HEAD^ HEAD
 
       - name: Install Node.js
         uses: actions/setup-node@v3
