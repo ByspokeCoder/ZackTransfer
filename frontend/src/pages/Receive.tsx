@@ -118,7 +118,7 @@ export default function Receive() {
         <form onSubmit={handleSubmit}>
           <TextField
             fullWidth
-            label="Enter code"
+            placeholder="Enter code"
             value={code}
             onChange={(e) => setCode(e.target.value)}
             disabled={loading}

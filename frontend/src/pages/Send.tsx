@@ -170,7 +170,7 @@ export default function Send() {
               multiline
               rows={4}
               variant="outlined"
-              label="Enter text"
+              placeholder="Enter text"
               value={text}
               onChange={(e) => setText(e.target.value)}
               disabled={loading}
