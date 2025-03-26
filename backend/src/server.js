@@ -133,9 +133,17 @@ app.get('/api/transfers/:code', (req, res) => {
   }
 });
 
-// Basic route
+// Basic routes
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to ZackTransfer API' });
+});
+
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
 });
 
 // Error handling middleware
