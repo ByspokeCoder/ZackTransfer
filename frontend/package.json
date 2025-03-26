@@ -1,10 +1,9 @@
 {
-  // Deployment test - GitHub Actions workflow
   "name": "frontend",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Frontend application for ZackTransfer - Deployment test",
+  "description": "Frontend application for ZackTransfer",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
