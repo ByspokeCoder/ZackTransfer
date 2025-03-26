@@ -83,24 +83,68 @@ export default function Receive() {
       <Box sx={{ 
         mb: 4,
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
-        gap: 2
+        gap: 3
       }}>
-        <Typography variant="h4" sx={{ 
-          color: '#1C1C1C', 
-          fontWeight: 500,
-          fontFamily: "'BM Hanna 11yrs old', sans-serif"
+        <Box sx={{ 
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2
         }}>
-          ZackTransfer
-        </Typography>
-        <img 
-          src="/images/Logo1.png" 
-          alt="ZackTransfer Logo" 
-          style={{ 
-            width: '40px',
-            height: 'auto'
-          }} 
-        />
+          <Typography variant="h4" sx={{ 
+            color: '#1C1C1C', 
+            fontWeight: 500,
+            fontFamily: "'BM Hanna 11yrs old', sans-serif"
+          }}>
+            ZackTransfer
+          </Typography>
+          <img 
+            src="/images/Logo1.png" 
+            alt="ZackTransfer Logo" 
+            style={{ 
+              width: '40px',
+              height: 'auto'
+            }} 
+          />
+        </Box>
+        
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button
+            variant="outlined"
+            href="/"
+            sx={{ 
+              borderColor: '#C17F59',
+              color: '#C17F59',
+              '&:hover': {
+                borderColor: '#A66B48',
+                bgcolor: 'rgba(193, 127, 89, 0.04)'
+              },
+              textTransform: 'none',
+              borderRadius: '8px',
+              px: 4,
+              py: 1
+            }}
+          >
+            Send
+          </Button>
+          <Button
+            variant="contained"
+            href="/receive"
+            sx={{ 
+              bgcolor: '#C17F59',
+              '&:hover': {
+                bgcolor: '#A66B48'
+              },
+              textTransform: 'none',
+              borderRadius: '8px',
+              px: 4,
+              py: 1
+            }}
+          >
+            Receive
+          </Button>
+        </Box>
       </Box>
       
       <Paper 
