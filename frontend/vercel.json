@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://zacktransfer.com/api/:path*"
+      "destination": "https://api.zacktransfer.com/api/:path*"
     },
     {
       "source": "/health",
-      "destination": "https://zacktransfer.com/health"
+      "destination": "https://api.zacktransfer.com/health"
     }
   ],
   "headers": [
