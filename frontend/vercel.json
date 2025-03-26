@@ -1,7 +1,0 @@
-{
-  "buildCommand": "chmod +x build.sh && ./build.sh",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "framework": "vite",
-  "outputDirectory": "dist"
-} 
