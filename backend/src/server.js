@@ -10,6 +10,27 @@ dotenv.config();
 
 const app = express();
 
+// Enable CORS for all requests - must be first middleware
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', '*');
+  res.header('Access-Control-Expose-Headers', '*');
+  
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
+});
+
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  console.log('Headers:', req.headers);
+  next();
+});
+
 // In-memory storage
 const transfers = new Map();
 
@@ -46,13 +67,6 @@ const limiter = rateLimit({
 });
 
 // Middleware
-app.use(cors({
-  origin: '*',  // Allow all origins for now to debug
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'Authorization'],
-  exposedHeaders: ['Content-Length', 'Content-Type'],
-  credentials: false  // Set to false since we're allowing all origins
-}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(limiter);
@@ -126,8 +140,17 @@ app.get('/', (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
+  console.error('Error details:', {
+    message: err.message,
+    stack: err.stack,
+    path: req.path,
+    method: req.method,
+    headers: req.headers
+  });
+  res.status(500).json({ 
+    error: 'Something went wrong!',
+    details: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
 });
 
 // Start server
