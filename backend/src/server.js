@@ -47,10 +47,11 @@ const limiter = rateLimit({
 
 // Middleware
 app.use(cors({
-  origin: ['https://www.zacktransfer.com', 'https://zacktransfer.com', 'http://localhost:3000'],
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type'],
-  credentials: true
+  origin: '*',  // Allow all origins for now to debug
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'Authorization'],
+  exposedHeaders: ['Content-Length', 'Content-Type'],
+  credentials: false  // Set to false since we're allowing all origins
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
