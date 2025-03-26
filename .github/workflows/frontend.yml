@@ -36,9 +36,12 @@ jobs:
           pwd
           echo "Directory contents:"
           ls -la
+          echo "Parent directory contents:"
+          ls -la ..
 
-      - name: Verify Secrets
+      - name: Verify Secrets and Environment
         run: |
+          echo "Checking secrets..."
           if [ -z "${{ secrets.VERCEL_TOKEN }}" ]; then
             echo "Error: VERCEL_TOKEN is not set"
             exit 1
@@ -52,6 +55,14 @@ jobs:
             exit 1
           fi
           echo "All required secrets are set"
+          
+          echo "Checking package.json exists..."
+          if [ ! -f "package.json" ]; then
+            echo "Error: package.json not found in $(pwd)"
+            exit 1
+          fi
+          echo "package.json contents:"
+          cat package.json
 
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -63,15 +74,26 @@ jobs:
       - name: Install Dependencies
         run: |
           echo "Installing dependencies..."
-          npm ci
+          npm ci --verbose
           echo "Installing Vercel CLI..."
-          npm install --global vercel@latest
+          npm install --global vercel@latest --verbose
+          echo "Vercel CLI version:"
+          vercel --version
 
       - name: Deploy to Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           echo "Starting Vercel deployment..."
-          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-          vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+          echo "Current directory: $(pwd)"
+          echo "Directory contents:"
+          ls -la
+          
+          echo "Pulling Vercel project settings..."
+          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }} --debug
+          
+          echo "Building project..."
+          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }} --debug
+          
+          echo "Deploying build..."
+          vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }} --debug
