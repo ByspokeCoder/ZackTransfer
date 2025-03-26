@@ -106,13 +106,13 @@ export default function Send() {
       bgcolor: '#1C1C1C',
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       pt: 4,
       px: 3
     }}>
-      <Box sx={{ mb: 4 }}>
+      <Box sx={{ mb: 4, pl: 2 }}>
         <img 
-          src="/images/logo.png" 
+          src="/images/logo1.png" 
           alt="ZackTransfer Logo" 
           style={{ 
             width: '60px',
@@ -128,7 +128,8 @@ export default function Send() {
           maxWidth: '600px',
           bgcolor: 'rgba(255, 255, 255, 0.05)',
           backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)'
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          alignSelf: 'center'
         }}
       >
         <Box sx={{ borderBottom: 1, borderColor: 'rgba(255, 255, 255, 0.1)' }}>
