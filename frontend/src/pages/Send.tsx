@@ -101,94 +101,166 @@ export default function Send() {
   };
 
   return (
-    <Paper elevation={3} sx={{ p: 3 }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={tabValue} onChange={handleTabChange} centered>
-          <Tab icon={<TextFields />} label="Text" />
-          <Tab icon={<PhotoCamera />} label="Image" />
-        </Tabs>
+    <Box sx={{ 
+      minHeight: '100vh',
+      bgcolor: '#1C1C1C',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      pt: 4,
+      px: 3
+    }}>
+      <Box sx={{ mb: 4 }}>
+        <img 
+          src="/images/logo.png" 
+          alt="ZackTransfer Logo" 
+          style={{ 
+            width: '60px',
+            height: 'auto'
+          }} 
+        />
       </Box>
-
-      <TabPanel value={tabValue} index={0}>
-        <form onSubmit={handleSubmit}>
-          <TextField
-            fullWidth
-            multiline
-            rows={4}
-            variant="outlined"
-            label="Enter text"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            disabled={loading}
-            required
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            sx={{ mt: 2 }}
-            disabled={loading || !text}
+      
+      <Paper 
+        elevation={3} 
+        sx={{ 
+          width: '100%',
+          maxWidth: '600px',
+          bgcolor: 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)'
+        }}
+      >
+        <Box sx={{ borderBottom: 1, borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+          <Tabs 
+            value={tabValue} 
+            onChange={handleTabChange} 
+            centered
+            sx={{
+              '& .MuiTab-root': {
+                color: 'rgba(255, 255, 255, 0.7)',
+                '&.Mui-selected': {
+                  color: 'white',
+                },
+              },
+            }}
           >
-            {loading ? <CircularProgress size={24} /> : 'Send Text'}
-          </Button>
-        </form>
-      </TabPanel>
+            <Tab icon={<TextFields />} label="Text" />
+            <Tab icon={<PhotoCamera />} label="Image" />
+          </Tabs>
+        </Box>
 
-      <TabPanel value={tabValue} index={1}>
-        <form onSubmit={handleSubmit}>
-          <Button
-            variant="outlined"
-            component="label"
-            fullWidth
-            sx={{ mb: 2 }}
-            disabled={loading}
-          >
-            Choose Image
-            <input
-              type="file"
-              hidden
-              accept="image/*"
-              onChange={(e) => setImage(e.target.files?.[0] || null)}
+        <TabPanel value={tabValue} index={0}>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              fullWidth
+              multiline
+              rows={4}
+              variant="outlined"
+              label="Enter text"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              disabled={loading}
+              required
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  bgcolor: 'white',
+                  '&:hover': {
+                    bgcolor: 'white',
+                  },
+                  '&.Mui-focused': {
+                    bgcolor: 'white',
+                  }
+                }
+              }}
             />
-          </Button>
-          {image && (
-            <Typography variant="body2" sx={{ mb: 2 }}>
-              Selected: {image.name}
-            </Typography>
-          )}
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            disabled={loading || !image}
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{ 
+                mt: 2,
+                bgcolor: '#1C1C1C',
+                '&:hover': {
+                  bgcolor: '#2C2C2C'
+                }
+              }}
+              disabled={loading || !text}
+            >
+              {loading ? <CircularProgress size={24} /> : 'Send Text'}
+            </Button>
+          </form>
+        </TabPanel>
+
+        <TabPanel value={tabValue} index={1}>
+          <form onSubmit={handleSubmit}>
+            <Button
+              variant="outlined"
+              component="label"
+              fullWidth
+              sx={{ 
+                mb: 2,
+                borderColor: 'rgba(255, 255, 255, 0.23)',
+                color: 'white',
+                '&:hover': {
+                  borderColor: 'white',
+                }
+              }}
+              disabled={loading}
+            >
+              Choose Image
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={(e) => setImage(e.target.files?.[0] || null)}
+              />
+            </Button>
+            {image && (
+              <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
+                Selected: {image.name}
+              </Typography>
+            )}
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{ 
+                bgcolor: '#1C1C1C',
+                '&:hover': {
+                  bgcolor: '#2C2C2C'
+                }
+              }}
+              disabled={loading || !image}
+            >
+              {loading ? <CircularProgress size={24} /> : 'Send Image'}
+            </Button>
+          </form>
+        </TabPanel>
+
+        {error && (
+          <Alert severity="error" sx={{ mx: 3, mb: 3 }}>
+            {error}
+          </Alert>
+        )}
+
+        {code && (
+          <Alert 
+            severity="success" 
+            sx={{ mx: 3, mb: 3 }}
+            icon={<Timer />}
           >
-            {loading ? <CircularProgress size={24} /> : 'Send Image'}
-          </Button>
-        </form>
-      </TabPanel>
-
-      {error && (
-        <Alert severity="error" sx={{ mt: 2 }}>
-          {error}
-        </Alert>
-      )}
-
-      {code && (
-        <Alert 
-          severity="success" 
-          sx={{ mt: 2 }}
-          icon={<Timer />}
-        >
-          <Box>
-            <Typography variant="body1">
-              Your code is: <strong>{code}</strong>
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Expires in: {timeLeft} seconds
-            </Typography>
-          </Box>
-        </Alert>
-      )}
-    </Paper>
+            <Box>
+              <Typography variant="body1">
+                Your code is: <strong>{code}</strong>
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Expires in: {timeLeft} seconds
+              </Typography>
+            </Box>
+          </Alert>
+        )}
+      </Paper>
+    </Box>
   );
 } 
