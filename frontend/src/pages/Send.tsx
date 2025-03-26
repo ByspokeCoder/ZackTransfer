@@ -106,16 +106,24 @@ export default function Send() {
       bgcolor: '#1C1C1C',
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'flex-start',
+      alignItems: 'center',
       pt: 4,
       px: 3
     }}>
-      <Box sx={{ mb: 4, pl: 2 }}>
+      <Box sx={{ 
+        mb: 4,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2
+      }}>
+        <Typography variant="h4" sx={{ color: 'white', fontWeight: 500 }}>
+          ZackTransfer
+        </Typography>
         <img 
-          src="/images/logo1.png" 
+          src="/images/Logo1.png" 
           alt="ZackTransfer Logo" 
           style={{ 
-            width: '60px',
+            width: '40px',
             height: 'auto'
           }} 
         />
