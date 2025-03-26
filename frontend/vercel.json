@@ -1,12 +1,21 @@
 {
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/:path*",
-      "destination": "https://api.zacktransfer.com/api/:path*"
+      "src": "/api/(.*)",
+      "dest": "https://api.zacktransfer.com/api/$1"
     },
     {
-      "source": "/health",
-      "destination": "https://api.zacktransfer.com/health"
+      "handle": "filesystem"
+    },
+    {
+      "src": "/receive",
+      "dest": "/index.html",
+      "status": 200
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html",
+      "status": 200
     }
   ],
   "headers": [
