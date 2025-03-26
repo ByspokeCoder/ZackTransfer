@@ -23,31 +23,23 @@ jobs:
           echo "Workspace: ${{ github.workspace }}"
           echo "Modified files:"
           git diff --name-only HEAD^ HEAD
-          echo "Directory contents:"
-          ls -la
-          echo "Frontend directory contents:"
-          ls -la frontend || echo "Frontend directory not found"
 
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      - name: Install Dependencies
+      - name: Create Vercel Project Config
         working-directory: ./frontend
         run: |
-          echo "Installing project dependencies..."
-          npm ci
-          echo "Installing Vercel CLI..."
-          npm install --global vercel@latest
+          cat > .vercel/project.json << EOF
+          {
+            "projectId": "${{ secrets.VERCEL_PROJECT_ID }}",
+            "orgId": "${{ secrets.VERCEL_ORG_ID }}"
+          }
+          EOF
 
       - name: Deploy to Vercel
-        id: deploy
-        uses: BetaHuhn/deploy-to-vercel-action@v1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          WORKING_DIRECTORY: ./frontend
-          PRODUCTION: true
+        working-directory: ./frontend
+        run: |
+          npx vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --yes
