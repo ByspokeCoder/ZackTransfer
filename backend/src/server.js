@@ -4,9 +4,16 @@ const dotenv = require('dotenv');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 const multer = require('multer');
+const fs = require('fs');
 
 // Load environment variables
 dotenv.config();
+
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 const app = express();
 
@@ -163,6 +170,10 @@ app.use((err, req, res, next) => {
 
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
+  console.log('Environment:', process.env.NODE_ENV);
+  console.log('Working directory:', process.cwd());
+  console.log('Uploads directory:', uploadsDir);
+  console.log('__dirname:', __dirname);
 }); 
