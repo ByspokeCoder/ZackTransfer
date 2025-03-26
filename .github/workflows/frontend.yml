@@ -20,7 +20,9 @@ jobs:
         working-directory: ./frontend
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Debug Info
         run: |
@@ -28,6 +30,22 @@ jobs:
           echo "Event: ${{ github.event_name }}"
           echo "Modified files:"
           git diff --name-only HEAD^ HEAD
+
+      - name: Verify Secrets
+        run: |
+          if [ -z "${{ secrets.VERCEL_TOKEN }}" ]; then
+            echo "Error: VERCEL_TOKEN is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.VERCEL_ORG_ID }}" ]; then
+            echo "Error: VERCEL_ORG_ID is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.VERCEL_PROJECT_ID }}" ]; then
+            echo "Error: VERCEL_PROJECT_ID is not set"
+            exit 1
+          fi
+          echo "All required secrets are set"
 
       - name: Install Node.js
         uses: actions/setup-node@v3
