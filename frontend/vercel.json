@@ -1,7 +1,7 @@
 {
-  "buildCommand": "cd frontend && npm install && npm run build",
+  "buildCommand": "chmod +x build.sh && ./build.sh",
   "devCommand": "npm run dev",
-  "installCommand": "cd frontend && npm install",
-  "framework": null,
-  "outputDirectory": "frontend/dist"
+  "installCommand": "npm install",
+  "framework": "vite",
+  "outputDirectory": "dist"
 } 
