@@ -107,18 +107,18 @@ export default function Receive() {
           </Typography>
           {content.type === 'text' ? (
             <Box sx={{ bgcolor: 'grey.100', p: 2, borderRadius: 1 }}>
-              <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', mb: 2 }}>
-                {content.content}
-              </Typography>
-              <Button
-                variant="contained"
-                size="small"
-                startIcon={<ContentCopyIcon />}
-                onClick={() => handleCopy(content.content)}
-                color={copySuccess ? "success" : "primary"}
-              >
-                {copySuccess ? "Copied!" : "Copy to clipboard"}
-              </Button>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2, mb: 2 }}>
+                <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', flex: 1 }}>
+                  {content.content}
+                </Typography>
+                <IconButton
+                  onClick={() => handleCopy(content.content)}
+                  color={copySuccess ? "success" : "primary"}
+                  sx={{ flexShrink: 0 }}
+                >
+                  <ContentCopyIcon />
+                </IconButton>
+              </Box>
             </Box>
           ) : (
             <Box>
