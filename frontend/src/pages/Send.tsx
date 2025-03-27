@@ -44,6 +44,9 @@ export default function Send() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  const [email, setEmail] = useState('');
+  const [isRead, setIsRead] = useState(false);
+  const [readAt, setReadAt] = useState<string | null>(null);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -59,6 +62,27 @@ export default function Send() {
       if (timer) clearInterval(timer);
     };
   }, [timeLeft]);
+
+  useEffect(() => {
+    let checkStatus: NodeJS.Timeout;
+    if (code) {
+      checkStatus = setInterval(async () => {
+        try {
+          const response = await axios.get(`${api.baseURL}/api/transfers/${code}`);
+          if (response.data.isRead) {
+            setIsRead(true);
+            setReadAt(response.data.readAt);
+            clearInterval(checkStatus);
+          }
+        } catch (error) {
+          console.error('Error checking read status:', error);
+        }
+      }, 5000); // Check every 5 seconds
+    }
+    return () => {
+      if (checkStatus) clearInterval(checkStatus);
+    };
+  }, [code]);
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -83,6 +107,7 @@ export default function Send() {
         formData.append('image', image);
         formData.append('type', 'image');
       }
+      formData.append('email', email);
 
       const response = await axios.post(`${api.baseURL}/api/transfers`, formData, {
         headers: {
@@ -213,102 +238,150 @@ export default function Send() {
 
         <TabPanel value={tabValue} index={0}>
           <form onSubmit={handleSubmit}>
-            <TextField
-              fullWidth
-              multiline
-              rows={4}
-              variant="outlined"
-              placeholder="Enter text"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              disabled={loading}
-              required
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  bgcolor: '#F8F8F8',
-                  '&:hover': {
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <TextField
+                fullWidth
+                multiline
+                rows={4}
+                variant="outlined"
+                placeholder="Enter text"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                disabled={loading}
+                required
+                sx={{
+                  '& .MuiOutlinedInput-root': {
                     bgcolor: '#F8F8F8',
-                  },
-                  '&.Mui-focused': {
-                    bgcolor: '#F8F8F8',
-                    '& fieldset': {
-                      borderColor: '#C17F59',
+                    '&:hover': {
+                      bgcolor: '#F8F8F8',
+                    },
+                    '&.Mui-focused': {
+                      bgcolor: '#F8F8F8',
+                      '& fieldset': {
+                        borderColor: '#C17F59',
+                      }
                     }
                   }
-                }
-              }}
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              sx={{ 
-                mt: 2,
-                bgcolor: '#C17F59',
-                '&:hover': {
-                  bgcolor: '#A66B48'
-                },
-                textTransform: 'none',
-                borderRadius: '8px',
-                py: 1.5
-              }}
-              disabled={loading || !text}
-            >
-              {loading ? <CircularProgress size={24} /> : 'Send Text'}
-            </Button>
+                }}
+              />
+              <TextField
+                fullWidth
+                type="email"
+                variant="outlined"
+                placeholder="Your email (optional, for read receipt)"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    bgcolor: '#F8F8F8',
+                    '&:hover': {
+                      bgcolor: '#F8F8F8',
+                    },
+                    '&.Mui-focused': {
+                      bgcolor: '#F8F8F8',
+                      '& fieldset': {
+                        borderColor: '#C17F59',
+                      }
+                    }
+                  }
+                }}
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={{ 
+                  bgcolor: '#C17F59',
+                  '&:hover': {
+                    bgcolor: '#A66B48'
+                  },
+                  textTransform: 'none',
+                  borderRadius: '8px',
+                  py: 1.5
+                }}
+                disabled={loading || !text}
+              >
+                {loading ? <CircularProgress size={24} /> : 'Send Text'}
+              </Button>
+            </Box>
           </form>
         </TabPanel>
 
         <TabPanel value={tabValue} index={1}>
           <form onSubmit={handleSubmit}>
-            <Button
-              variant="outlined"
-              component="label"
-              fullWidth
-              sx={{ 
-                mb: 2,
-                borderColor: '#C17F59',
-                color: '#C17F59',
-                '&:hover': {
-                  borderColor: '#A66B48',
-                  bgcolor: 'rgba(193, 127, 89, 0.04)'
-                },
-                textTransform: 'none',
-                borderRadius: '8px',
-                py: 1.5
-              }}
-              disabled={loading}
-            >
-              Choose Image
-              <input
-                type="file"
-                hidden
-                accept="image/*"
-                onChange={(e) => setImage(e.target.files?.[0] || null)}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Button
+                variant="outlined"
+                component="label"
+                fullWidth
+                sx={{ 
+                  borderColor: '#C17F59',
+                  color: '#C17F59',
+                  '&:hover': {
+                    borderColor: '#A66B48',
+                    bgcolor: 'rgba(193, 127, 89, 0.04)'
+                  },
+                  textTransform: 'none',
+                  borderRadius: '8px',
+                  py: 1.5
+                }}
+                disabled={loading}
+              >
+                Choose Image
+                <input
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  onChange={(e) => setImage(e.target.files?.[0] || null)}
+                />
+              </Button>
+              {image && (
+                <Typography variant="body2" sx={{ color: '#666666' }}>
+                  Selected: {image.name}
+                </Typography>
+              )}
+              <TextField
+                fullWidth
+                type="email"
+                variant="outlined"
+                placeholder="Your email (optional, for read receipt)"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    bgcolor: '#F8F8F8',
+                    '&:hover': {
+                      bgcolor: '#F8F8F8',
+                    },
+                    '&.Mui-focused': {
+                      bgcolor: '#F8F8F8',
+                      '& fieldset': {
+                        borderColor: '#C17F59',
+                      }
+                    }
+                  }
+                }}
               />
-            </Button>
-            {image && (
-              <Typography variant="body2" sx={{ mb: 2, color: '#666666' }}>
-                Selected: {image.name}
-              </Typography>
-            )}
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              sx={{ 
-                bgcolor: '#C17F59',
-                '&:hover': {
-                  bgcolor: '#A66B48'
-                },
-                textTransform: 'none',
-                borderRadius: '8px',
-                py: 1.5
-              }}
-              disabled={loading || !image}
-            >
-              {loading ? <CircularProgress size={24} /> : 'Send Image'}
-            </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={{ 
+                  bgcolor: '#C17F59',
+                  '&:hover': {
+                    bgcolor: '#A66B48'
+                  },
+                  textTransform: 'none',
+                  borderRadius: '8px',
+                  py: 1.5
+                }}
+                disabled={loading || !image}
+              >
+                {loading ? <CircularProgress size={24} /> : 'Send Image'}
+              </Button>
+            </Box>
           </form>
         </TabPanel>
 
@@ -341,6 +414,16 @@ export default function Send() {
               <Typography variant="body2" color="#666666">
                 Expires in: {timeLeft} seconds
               </Typography>
+              {email && (
+                <Typography variant="body2" color="#666666" sx={{ mt: 1 }}>
+                  You will receive a read receipt at {email}
+                </Typography>
+              )}
+              {isRead && (
+                <Typography variant="body2" color="#4CAF50" sx={{ mt: 1 }}>
+                  ✓ Read at {new Date(readAt!).toLocaleString()}
+                </Typography>
+              )}
             </Box>
           </Alert>
         )}
