@@ -94,8 +94,9 @@ export default function Receive() {
         }}>
           <Typography variant="h4" sx={{ 
             color: '#1C1C1C', 
-            fontWeight: 500,
-            fontFamily: "'BM Hanna 11yrs old', sans-serif"
+            fontWeight: 600,
+            letterSpacing: '-0.5px',
+            fontFamily: 'var(--system-font-display)'
           }}>
             ZackTransfer
           </Typography>

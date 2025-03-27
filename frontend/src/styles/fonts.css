@@ -1,3 +1,21 @@
+/* iOS System Font Stack */
+:root {
+  --system-font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+  --system-font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Apply system fonts to specific elements */
+.title-font {
+  font-family: var(--system-font-display);
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.body-font {
+  font-family: var(--system-font);
+  font-weight: 400;
+}
+
 @font-face {
   font-family: 'BM Hanna 11yrs old';
   src: url('/fonts/BMHANNAAir.ttf') format('truetype');
