@@ -14,17 +14,15 @@ console.log('Email configuration:', {
 });
 
 const transporterConfig = {
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD
   },
   debug: true,
-  logger: true,
-  secure: true, // Use SSL/TLS
-  tls: {
-    rejectUnauthorized: true // Verify SSL certificates
-  }
+  logger: true
 };
 
 console.log('Creating transporter with config:', {
@@ -88,7 +86,12 @@ export const sendReadReceipt = async (transfer: ITransfer) => {
       <p>Your transfer with code <strong>${transfer.code}</strong> has been viewed by the recipient.</p>
       <p>Content type: ${transfer.type}</p>
       <p>Read at: ${transfer.readAt?.toLocaleString()}</p>
-    `
+    `,
+    headers: {
+      'X-Priority': '1',
+      'X-MSMail-Priority': 'High',
+      'Importance': 'high'
+    }
   };
 
   console.log('Sending email with options:', {
