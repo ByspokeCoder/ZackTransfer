@@ -80,13 +80,12 @@ const sendReadReceipt = async (transfer) => {
     to: transfer.senderEmail,
     subject: 'Your transfer has been read!',
     html: `
-      <h2>Transfer Access Confirmation</h2>
       <p>This is an automated read receipt for your transfer.</p>
       <p>Transfer details:</p>
       <ul>
         <li>Code: <strong>${transfer.code}</strong></li>
         <li>Content type: ${transfer.type}</li>
-        <li>Accessed at: ${transfer.readAt?.toLocaleString()}</li>
+        <li>Accessed at: ${transfer.readAt?.toLocaleString()} UTC</li>
       </ul>
       <p style="color: #666; font-size: 12px;">This is an automated notification from ZackTransfer.</p>
     `,
