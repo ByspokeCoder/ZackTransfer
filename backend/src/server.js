@@ -31,27 +31,24 @@ const connectWithRetry = async () => {
     }
     
     // Log connection details without sensitive information
-    console.log('MongoDB connection details:', {
-      hasUri: true,
-      uriLength: uri.length,
-      startsWithMongo: uri.startsWith('mongodb'),
-      hasAtlas: uri.includes('mongodb.net'),
-      hasAuth: uri.includes('@'),
-      hasDatabase: uri.includes('/?'),
-      host: uriParts[4],
-      database: uriParts[5]?.substring(1) || 'default',
-      username: uriParts[2].substring(0, 3) + '...' // Only show first 3 chars of username
+    const uriObj = new URL(uri);
+    console.log('MongoDB Connection Details:', {
+      host: uriObj.host,
+      database: uriObj.pathname.slice(1),
+      username: uriObj.username ? uriObj.username.slice(0, 3) + '***' : 'none',
+      hasPassword: !!uriObj.password,
+      authSource: 'admin',
+      authMechanism: 'SCRAM-SHA-1'
     });
     
     // Simplified connection options
     await mongoose.connect(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 30000, // 30 seconds
+      serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
-      family: 4, // Force IPv4
-      maxPoolSize: 5,
-      authSource: 'admin' // Explicitly set auth source
+      authSource: 'admin',
+      authMechanism: 'SCRAM-SHA-1'
     });
     
     console.log('Successfully connected to MongoDB');
