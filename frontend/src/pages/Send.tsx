@@ -11,6 +11,7 @@ import {
   Alert,
 } from '@mui/material';
 import { PhotoCamera, TextFields, Timer } from '@mui/icons-material';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { api } from '../api/config';
 
@@ -185,7 +186,8 @@ export default function Send() {
         <Box sx={{ display: 'flex', gap: 2 }}>
           <Button
             variant="contained"
-            href="/"
+            component={Link}
+            to="/"
             sx={{ 
               bgcolor: '#C17F59',
               '&:hover': {
@@ -201,7 +203,8 @@ export default function Send() {
           </Button>
           <Button
             variant="outlined"
-            href="/receive"
+            component={Link}
+            to="/receive"
             sx={{ 
               borderColor: '#C17F59',
               color: '#C17F59',

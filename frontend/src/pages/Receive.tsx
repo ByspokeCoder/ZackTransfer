@@ -11,6 +11,7 @@ import {
   IconButton,
 } from '@mui/material';
 import { Download as DownloadIcon, ContentCopy as ContentCopyIcon } from '@mui/icons-material';
+import { Link as RouterLink } from 'react-router-dom';
 import axios from 'axios';
 import { APP_NAME } from '../api/config';
 import { api } from '../api/config';
@@ -113,7 +114,8 @@ export default function Receive() {
         <Box sx={{ display: 'flex', gap: 2 }}>
           <Button
             variant="outlined"
-            href="/"
+            component={RouterLink}
+            to="/"
             sx={{ 
               borderColor: '#C17F59',
               color: '#C17F59',
@@ -131,7 +133,8 @@ export default function Receive() {
           </Button>
           <Button
             variant="contained"
-            href="/receive"
+            component={RouterLink}
+            to="/receive"
             sx={{ 
               bgcolor: '#C17F59',
               '&:hover': {
