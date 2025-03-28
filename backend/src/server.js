@@ -106,11 +106,6 @@ app.use(limiter);
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// Generate a random 6-digit code
-const generateCode = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-};
-
 // Create a new transfer
 app.post('/api/transfers', upload.single('image'), createTransfer);
 
