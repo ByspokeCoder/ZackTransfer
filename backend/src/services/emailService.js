@@ -78,7 +78,7 @@ const sendReadReceipt = async (transfer) => {
       address: process.env.EMAIL_USER
     },
     to: transfer.senderEmail,
-    subject: '[Read Receipt] ZackTransfer Notification',
+    subject: 'Your transfer has been read!',
     html: `
       <h2>Transfer Access Confirmation</h2>
       <p>This is an automated read receipt for your transfer.</p>
