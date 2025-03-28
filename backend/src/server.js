@@ -13,36 +13,53 @@ const { createTransfer, getTransfer } = require('./controllers/transferControlle
 dotenv.config();
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 45000,
-})
-.then(() => {
-  console.log('Connected to MongoDB');
-  console.log('MongoDB URI:', process.env.MONGODB_URI ? 'Set' : 'Not set');
-})
-.catch((error) => {
-  console.error('MongoDB connection error:', {
-    message: error.message,
-    code: error.code,
-    name: error.name
-  });
-  process.exit(1);
-});
+const connectWithRetry = async () => {
+  try {
+    console.log('Attempting to connect to MongoDB...');
+    console.log('MongoDB URI:', process.env.MONGODB_URI ? 'Set' : 'Not set');
+    
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      retryWrites: true,
+      w: 'majority',
+      retryReads: true,
+      maxPoolSize: 10
+    });
+    
+    console.log('Successfully connected to MongoDB');
+  } catch (error) {
+    console.error('MongoDB connection error:', {
+      message: error.message,
+      code: error.code,
+      name: error.name,
+      stack: error.stack
+    });
+    
+    // Retry connection after 5 seconds
+    console.log('Retrying connection in 5 seconds...');
+    setTimeout(connectWithRetry, 5000);
+  }
+};
+
+// Start MongoDB connection
+connectWithRetry();
 
 // Handle MongoDB connection errors after initial connection
 mongoose.connection.on('error', (error) => {
   console.error('MongoDB connection error:', {
     message: error.message,
     code: error.code,
-    name: error.name
+    name: error.name,
+    stack: error.stack
   });
 });
 
 mongoose.connection.on('disconnected', () => {
-  console.log('MongoDB disconnected');
+  console.log('MongoDB disconnected, attempting to reconnect...');
+  connectWithRetry();
 });
 
 // Ensure uploads directory exists
