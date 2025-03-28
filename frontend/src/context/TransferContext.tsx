@@ -44,10 +44,18 @@ export function TransferProvider({ children }: { children: React.ReactNode }) {
     if (code && timeLeft && timeLeft > 0) {
       checkStatus = setInterval(async () => {
         try {
+          console.log('Polling transfer status for code:', code);
           const response = await axios.get(`${api.baseURL}/api/transfers/${code}`);
-          if (response.data.isRead && response.data.readAt) {
+          console.log('Poll response:', response.data);
+          
+          if (response.data.isRead) {
+            console.log('Transfer marked as read, updating state');
             setIsRead(true);
-            setReadAt(new Date(response.data.readAt).toLocaleString());
+            if (response.data.readAt) {
+              const readTimestamp = new Date(response.data.readAt).toLocaleString();
+              console.log('Setting read timestamp:', readTimestamp);
+              setReadAt(readTimestamp);
+            }
             // Show browser notification if supported
             if ('Notification' in window && Notification.permission === 'granted') {
               new Notification('Transfer Read!', {

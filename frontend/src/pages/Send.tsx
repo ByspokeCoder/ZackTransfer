@@ -365,30 +365,29 @@ export default function Send() {
               mx: 3, 
               mb: 3,
               '& .MuiAlert-icon': {
-                color: '#C17F59'
+                color: isRead ? '#4CAF50' : '#C17F59'
               },
               '& .MuiAlert-message': {
                 color: '#1C1C1C'
               },
               bgcolor: '#FDF7F2'
             }}
-            icon={<Timer />}
+            icon={isRead ? '✓' : <Timer />}
           >
             <Box>
               <Typography variant="body1">
                 Your code is: <strong>{code}</strong>
               </Typography>
               <Typography variant="body2" color="#666666">
-                Expires in: {timeLeft} seconds
+                {isRead ? (
+                  <span style={{ color: '#4CAF50' }}>Read at {readAt}</span>
+                ) : (
+                  `Expires in: ${timeLeft} seconds`
+                )}
               </Typography>
-              {email && (
+              {email && !isRead && (
                 <Typography variant="body2" color="#666666" sx={{ mt: 1 }}>
                   You will receive a read receipt at {email}
-                </Typography>
-              )}
-              {isRead && (
-                <Typography variant="body2" color="#4CAF50" sx={{ mt: 1 }}>
-                  ✓ Read at {readAt} UTC
                 </Typography>
               )}
             </Box>
