@@ -5,6 +5,7 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
+const { sendReadReceipt } = require('./services/emailService');
 
 // Load environment variables
 dotenv.config();
@@ -137,6 +138,34 @@ app.get('/api/transfers/:code', (req, res) => {
   } catch (error) {
     console.error('Error retrieving transfer:', error);
     res.status(500).json({ error: 'Error retrieving transfer' });
+  }
+});
+
+// Test email endpoint
+app.post('/api/test-email', async (req, res) => {
+  try {
+    const testTransfer = {
+      code: 'TEST123',
+      type: 'text',
+      content: 'Test content',
+      senderEmail: req.body.email,
+      readAt: new Date()
+    };
+    
+    console.log('Testing email service with:', {
+      email: req.body.email,
+      emailUser: process.env.EMAIL_USER,
+      hasPassword: !!process.env.EMAIL_PASSWORD
+    });
+
+    await sendReadReceipt(testTransfer);
+    res.json({ status: 'Email sent successfully' });
+  } catch (error) {
+    console.error('Email test failed:', error);
+    res.status(500).json({ 
+      error: 'Failed to send test email',
+      details: error.message
+    });
   }
 });
 

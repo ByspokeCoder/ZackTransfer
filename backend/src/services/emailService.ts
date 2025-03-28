@@ -1,6 +1,4 @@
-import nodemailer from 'nodemailer';
-import { google } from 'googleapis';
-import { OAuth2Client } from 'google-auth-library';
+import nodemailer, { Transporter } from 'nodemailer';
 import { ITransfer } from '../models/Transfer';
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -9,40 +7,19 @@ console.log('Environment check:', {
   isProduction: isProduction
 });
 
-// Create OAuth2 client
-const oauth2Client = new google.auth.OAuth2(
-  process.env.GMAIL_CLIENT_ID,
-  process.env.GMAIL_CLIENT_SECRET,
-  'https://developers.google.com/oauthplayground'
-);
-
-oauth2Client.setCredentials({
-  refresh_token: process.env.GMAIL_REFRESH_TOKEN
-});
-
-async function createTransporter() {
+async function createTransporter(): Promise<Transporter> {
   try {
-    // Get access token
-    const accessToken = await oauth2Client.getAccessToken();
-    
     console.log('Email configuration:', {
       user: process.env.EMAIL_USER,
-      clientId: process.env.GMAIL_CLIENT_ID ? '****' : 'not set',
-      clientSecret: process.env.GMAIL_CLIENT_SECRET ? '****' : 'not set',
-      refreshToken: process.env.GMAIL_REFRESH_TOKEN ? '****' : 'not set',
-      accessToken: accessToken ? '****' : 'not set',
+      hasPassword: !!process.env.EMAIL_PASSWORD,
       env: process.env.NODE_ENV
     });
 
     const transporterConfig = {
       service: 'gmail',
       auth: {
-        type: 'OAuth2',
         user: process.env.EMAIL_USER,
-        clientId: process.env.GMAIL_CLIENT_ID,
-        clientSecret: process.env.GMAIL_CLIENT_SECRET,
-        refreshToken: process.env.GMAIL_REFRESH_TOKEN,
-        accessToken: accessToken?.token || undefined
+        pass: process.env.EMAIL_PASSWORD
       }
     };
 
@@ -50,10 +27,7 @@ async function createTransporter() {
       ...transporterConfig,
       auth: {
         ...transporterConfig.auth,
-        clientId: '****',
-        clientSecret: '****',
-        refreshToken: '****',
-        accessToken: '****'
+        pass: '****'
       }
     });
 
@@ -84,12 +58,10 @@ export const sendReadReceipt = async (transfer: ITransfer) => {
     return;
   }
 
-  if (!process.env.EMAIL_USER || !process.env.GMAIL_CLIENT_ID || !process.env.GMAIL_CLIENT_SECRET || !process.env.GMAIL_REFRESH_TOKEN) {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
     console.error('Missing email configuration:', {
       hasUser: !!process.env.EMAIL_USER,
-      hasClientId: !!process.env.GMAIL_CLIENT_ID,
-      hasClientSecret: !!process.env.GMAIL_CLIENT_SECRET,
-      hasRefreshToken: !!process.env.GMAIL_REFRESH_TOKEN
+      hasPassword: !!process.env.EMAIL_PASSWORD
     });
     throw new Error('Email configuration is incomplete');
   }
