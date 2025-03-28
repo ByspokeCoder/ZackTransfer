@@ -65,32 +65,46 @@ export default function Send() {
 
   useEffect(() => {
     let checkStatus: NodeJS.Timeout;
-    if (code) {
+    if (code && !isRead && timeLeft && timeLeft > 0) {
       checkStatus = setInterval(async () => {
         try {
           const response = await axios.get(`${api.baseURL}/api/transfers/${code}`);
           if (response.data.isRead) {
             setIsRead(true);
-            setReadAt(response.data.readAt);
-            clearInterval(checkStatus);
+            setReadAt(new Date().toLocaleString());
+            // Show browser notification if supported
+            if ('Notification' in window && Notification.permission === 'granted') {
+              new Notification('Transfer Read!', {
+                body: `Your transfer (${code}) has been read.`,
+                icon: '/images/Logo1.png'
+              });
+            }
           }
         } catch (error) {
           console.error('Error checking read status:', error);
         }
-      }, 5000); // Check every 5 seconds
+      }, 2000); // Check every 2 seconds
     }
     return () => {
       if (checkStatus) clearInterval(checkStatus);
     };
-  }, [code]);
+  }, [code, isRead, timeLeft]);
+
+  // Request notification permission
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
-    setText('');
-    setImage(null);
-    setCode(null);
-    setError(null);
-    setTimeLeft(null);
+    // Don't reset state when switching tabs
+    if (code === null) {
+      setText('');
+      setImage(null);
+      setError(null);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -396,38 +410,30 @@ export default function Send() {
 
         {code && (
           <Alert 
-            severity="success" 
+            severity={isRead ? "info" : "success"}
             sx={{ 
               mx: 3, 
               mb: 3,
-              '& .MuiAlert-icon': {
-                color: '#C17F59'
-              },
-              '& .MuiAlert-message': {
-                color: '#1C1C1C'
-              },
-              bgcolor: '#FDF7F2'
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              gap: 1
             }}
-            icon={<Timer />}
           >
-            <Box>
-              <Typography variant="body1">
-                Your code is: <strong>{code}</strong>
-              </Typography>
-              <Typography variant="body2" color="#666666">
-                Expires in: {timeLeft} seconds
-              </Typography>
-              {email && (
-                <Typography variant="body2" color="#666666" sx={{ mt: 1 }}>
-                  You will receive a read receipt at {email}
-                </Typography>
-              )}
-              {isRead && (
-                <Typography variant="body2" color="#4CAF50" sx={{ mt: 1 }}>
-                  ✓ Read at {new Date(readAt!).toLocaleString()}
-                </Typography>
+            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography>Transfer Code: <strong>{code}</strong></Typography>
+              {timeLeft !== null && timeLeft > 0 && (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Timer fontSize="small" />
+                  <Typography>{timeLeft}s</Typography>
+                </Box>
               )}
             </Box>
+            {isRead && (
+              <Typography variant="body2" color="textSecondary">
+                Read at: {readAt} UTC
+              </Typography>
+            )}
           </Alert>
         )}
       </Paper>

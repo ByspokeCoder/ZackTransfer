@@ -129,7 +129,9 @@ exports.getTransfer = async (req, res) => {
       type: transfer.type,
       imageUrl: transfer.imageUrl,
       createdAt: transfer.createdAt,
-      senderEmail: transfer.senderEmail || null // Ensure senderEmail is always included
+      senderEmail: transfer.senderEmail || null,
+      isRead: transfer.isRead,
+      readAt: transfer.readAt
     };
 
     console.log('Sending response:', {
