@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Paper,
@@ -14,6 +14,7 @@ import { PhotoCamera, TextFields, Timer } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { api } from '../api/config';
+import { useTransfer } from '../context/TransferContext';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -38,65 +39,12 @@ function TabPanel(props: TabPanelProps) {
 }
 
 export default function Send() {
+  const { code, timeLeft, isRead, readAt, email, setTransferState, setEmail } = useTransfer();
   const [tabValue, setTabValue] = useState(0);
   const [text, setText] = useState('');
   const [image, setImage] = useState<File | null>(null);
-  const [code, setCode] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [timeLeft, setTimeLeft] = useState<number | null>(null);
-  const [email, setEmail] = useState('');
-  const [isRead, setIsRead] = useState(false);
-  const [readAt, setReadAt] = useState<string | null>(null);
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (timeLeft !== null && timeLeft > 0) {
-      timer = setInterval(() => {
-        setTimeLeft((prev) => (prev !== null ? prev - 1 : null));
-      }, 1000);
-    } else if (timeLeft === 0) {
-      setCode(null);
-      setTimeLeft(null);
-    }
-    return () => {
-      if (timer) clearInterval(timer);
-    };
-  }, [timeLeft]);
-
-  useEffect(() => {
-    let checkStatus: NodeJS.Timeout;
-    if (code && !isRead && timeLeft && timeLeft > 0) {
-      checkStatus = setInterval(async () => {
-        try {
-          const response = await axios.get(`${api.baseURL}/api/transfers/${code}`);
-          if (response.data.isRead) {
-            setIsRead(true);
-            setReadAt(new Date().toLocaleString());
-            // Show browser notification if supported
-            if ('Notification' in window && Notification.permission === 'granted') {
-              new Notification('Transfer Read!', {
-                body: `Your transfer (${code}) has been read.`,
-                icon: '/images/Logo1.png'
-              });
-            }
-          }
-        } catch (error) {
-          console.error('Error checking read status:', error);
-        }
-      }, 2000); // Check every 2 seconds
-    }
-    return () => {
-      if (checkStatus) clearInterval(checkStatus);
-    };
-  }, [code, isRead, timeLeft]);
-
-  // Request notification permission
-  useEffect(() => {
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission();
-    }
-  }, []);
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -133,8 +81,7 @@ export default function Send() {
         timeout: api.timeout,
       });
 
-      setCode(response.data.code);
-      setTimeLeft(60);
+      setTransferState(response.data.code, email);
     } catch (err) {
       console.error('Error creating transfer:', err);
       setError('Failed to create transfer. Please try again.');
