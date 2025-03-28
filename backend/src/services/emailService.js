@@ -8,9 +8,12 @@ console.log('Environment check:', {
 
 async function createTransporter() {
   try {
+    // Remove any spaces from the app password
+    const appPassword = process.env.EMAIL_PASSWORD?.replace(/\s+/g, '');
+    
     console.log('Email configuration:', {
       user: process.env.EMAIL_USER,
-      hasPassword: !!process.env.EMAIL_PASSWORD,
+      hasPassword: !!appPassword,
       env: process.env.NODE_ENV
     });
 
@@ -20,8 +23,10 @@ async function createTransporter() {
       secure: true,
       auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD
-      }
+        pass: appPassword
+      },
+      debug: true,
+      logger: true
     };
 
     console.log('Creating transporter with config:', {
