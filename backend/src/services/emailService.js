@@ -1,5 +1,4 @@
-import nodemailer, { Transporter } from 'nodemailer';
-import { ITransfer } from '../models/Transfer';
+const nodemailer = require('nodemailer');
 
 const isProduction = process.env.NODE_ENV === 'production';
 console.log('Environment check:', {
@@ -7,7 +6,7 @@ console.log('Environment check:', {
   isProduction: isProduction
 });
 
-async function createTransporter(): Promise<Transporter> {
+async function createTransporter() {
   try {
     console.log('Email configuration:', {
       user: process.env.EMAIL_USER,
@@ -44,7 +43,7 @@ async function createTransporter(): Promise<Transporter> {
   }
 }
 
-export const sendReadReceipt = async (transfer: ITransfer) => {
+const sendReadReceipt = async (transfer) => {
   console.log('Starting sendReadReceipt for transfer:', {
     code: transfer.code,
     email: transfer.senderEmail,
@@ -103,14 +102,15 @@ export const sendReadReceipt = async (transfer: ITransfer) => {
     console.error('Stack trace:', error instanceof Error ? error.stack : 'No stack trace available');
     // Log additional error details if available
     if (error && typeof error === 'object') {
-      const emailError = error as any;
       console.error('Additional error details:', {
-        code: emailError.code,
-        command: emailError.command,
-        responseCode: emailError.responseCode,
-        response: emailError.response
+        code: error.code,
+        command: error.command,
+        responseCode: error.responseCode,
+        response: error.response
       });
     }
     throw error;
   }
-}; 
+};
+
+module.exports = { sendReadReceipt }; 
