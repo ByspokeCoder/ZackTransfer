@@ -41,13 +41,13 @@ export function TransferProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let checkStatus: NodeJS.Timeout;
-    if (code && !isRead && timeLeft && timeLeft > 0) {
+    if (code && timeLeft && timeLeft > 0) {
       checkStatus = setInterval(async () => {
         try {
           const response = await axios.get(`${api.baseURL}/api/transfers/${code}`);
-          if (response.data.isRead) {
+          if (response.data.isRead && response.data.readAt) {
             setIsRead(true);
-            setReadAt(new Date().toLocaleString());
+            setReadAt(new Date(response.data.readAt).toLocaleString());
             // Show browser notification if supported
             if ('Notification' in window && Notification.permission === 'granted') {
               new Notification('Transfer Read!', {
@@ -64,7 +64,7 @@ export function TransferProvider({ children }: { children: React.ReactNode }) {
     return () => {
       if (checkStatus) clearInterval(checkStatus);
     };
-  }, [code, isRead, timeLeft]);
+  }, [code, timeLeft]);
 
   // Request notification permission
   useEffect(() => {
