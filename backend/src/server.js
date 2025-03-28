@@ -5,11 +5,22 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
+const mongoose = require('mongoose');
 const { sendReadReceipt } = require('./services/emailService');
 const { createTransfer, getTransfer } = require('./controllers/transferController');
 
 // Load environment variables
 dotenv.config();
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch((error) => {
+    console.error('MongoDB connection error:', error);
+    process.exit(1);
+  });
 
 // Ensure uploads directory exists
 const uploadsDir = path.join(__dirname, '../uploads');
