@@ -13,14 +13,37 @@ const { createTransfer, getTransfer } = require('./controllers/transferControlle
 dotenv.config();
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => {
-    console.log('Connected to MongoDB');
-  })
-  .catch((error) => {
-    console.error('MongoDB connection error:', error);
-    process.exit(1);
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+})
+.then(() => {
+  console.log('Connected to MongoDB');
+  console.log('MongoDB URI:', process.env.MONGODB_URI ? 'Set' : 'Not set');
+})
+.catch((error) => {
+  console.error('MongoDB connection error:', {
+    message: error.message,
+    code: error.code,
+    name: error.name
   });
+  process.exit(1);
+});
+
+// Handle MongoDB connection errors after initial connection
+mongoose.connection.on('error', (error) => {
+  console.error('MongoDB connection error:', {
+    message: error.message,
+    code: error.code,
+    name: error.name
+  });
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('MongoDB disconnected');
+});
 
 // Ensure uploads directory exists
 const uploadsDir = path.join(__dirname, '../uploads');
@@ -50,17 +73,6 @@ app.use((req, res, next) => {
   console.log('Headers:', req.headers);
   next();
 });
-
-// In-memory storage
-const transfers = new Map();
-
-// Function to delete a transfer after 60 seconds
-const scheduleDeletion = (code) => {
-  setTimeout(() => {
-    transfers.delete(code);
-    console.log(`Transfer ${code} deleted after 60 seconds`);
-  }, 60000); // 60 seconds
-};
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
