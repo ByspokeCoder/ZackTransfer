@@ -41,18 +41,14 @@ const connectWithRetry = async () => {
       database: uriParts[4]
     });
     
+    // Simplified connection options
     await mongoose.connect(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 10000, // Increased timeout
+      serverSelectionTimeoutMS: 30000, // 30 seconds
       socketTimeoutMS: 45000,
-      retryWrites: true,
-      w: 'majority',
-      retryReads: true,
-      maxPoolSize: 10,
       family: 4, // Force IPv4
-      autoIndex: true,
-      autoCreate: true
+      maxPoolSize: 5
     });
     
     console.log('Successfully connected to MongoDB');
@@ -89,7 +85,8 @@ mongoose.connection.on('error', (error) => {
     env: {
       nodeEnv: process.env.NODE_ENV,
       hasMongoUri: !!process.env.MONGODB_URI,
-      mongoUriLength: process.env.MONGODB_URI?.length
+      mongoUriLength: process.env.MONGODB_URI?.length,
+      mongoUriFormat: process.env.MONGODB_URI?.match(/^mongodb:\/\/([^:]+):([^@]+)@([^/]+)\/([^?]+)/) ? 'valid' : 'invalid'
     }
   });
 });
@@ -99,7 +96,8 @@ mongoose.connection.on('disconnected', () => {
     env: {
       nodeEnv: process.env.NODE_ENV,
       hasMongoUri: !!process.env.MONGODB_URI,
-      mongoUriLength: process.env.MONGODB_URI?.length
+      mongoUriLength: process.env.MONGODB_URI?.length,
+      mongoUriFormat: process.env.MONGODB_URI?.match(/^mongodb:\/\/([^:]+):([^@]+)@([^/]+)\/([^?]+)/) ? 'valid' : 'invalid'
     }
   });
   connectWithRetry();
