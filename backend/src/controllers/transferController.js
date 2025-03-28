@@ -63,7 +63,11 @@ exports.createTransfer = async (req, res) => {
       senderEmail: email
     });
   } catch (error) {
-    console.error('Error creating transfer:', error);
+    console.error('Error creating transfer:', {
+      error: error.message,
+      stack: error.stack,
+      body: req.body
+    });
     res.status(500).json({ error: 'Error creating transfer' });
   }
 };
