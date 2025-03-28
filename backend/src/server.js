@@ -30,6 +30,7 @@ const connectWithRetry = async () => {
       throw new Error('Invalid MongoDB URI format');
     }
     
+    // Log connection details without sensitive information
     console.log('MongoDB connection details:', {
       hasUri: true,
       uriLength: uri.length,
@@ -38,7 +39,8 @@ const connectWithRetry = async () => {
       hasAuth: uri.includes('@'),
       hasDatabase: uri.includes('/?'),
       host: uriParts[4],
-      database: uriParts[5]?.substring(1) || 'default'
+      database: uriParts[5]?.substring(1) || 'default',
+      username: uriParts[2].substring(0, 3) + '...' // Only show first 3 chars of username
     });
     
     // Simplified connection options
@@ -48,23 +50,41 @@ const connectWithRetry = async () => {
       serverSelectionTimeoutMS: 30000, // 30 seconds
       socketTimeoutMS: 45000,
       family: 4, // Force IPv4
-      maxPoolSize: 5
+      maxPoolSize: 5,
+      authSource: 'admin' // Explicitly set auth source
     });
     
     console.log('Successfully connected to MongoDB');
   } catch (error) {
-    console.error('MongoDB connection error:', {
-      message: error.message,
-      code: error.code,
-      name: error.name,
-      stack: error.stack,
-      env: {
-        nodeEnv: process.env.NODE_ENV,
-        hasMongoUri: !!process.env.MONGODB_URI,
-        mongoUriLength: process.env.MONGODB_URI?.length,
-        mongoUriFormat: process.env.MONGODB_URI?.match(/^mongodb(\+srv)?:\/\/([^:]+):([^@]+)@([^/]+)(\/[^?]+)?/) ? 'valid' : 'invalid'
+    // Handle specific MongoDB errors
+    if (error.name === 'MongoServerError') {
+      if (error.code === 8000) {
+        console.error('MongoDB authentication failed:', {
+          message: 'Invalid username or password',
+          code: error.code,
+          host: process.env.MONGODB_URI?.match(/@([^/]+)/)?.[1]
+        });
+      } else {
+        console.error('MongoDB server error:', {
+          message: error.message,
+          code: error.code,
+          name: error.name
+        });
       }
-    });
+    } else {
+      console.error('MongoDB connection error:', {
+        message: error.message,
+        code: error.code,
+        name: error.name,
+        stack: error.stack,
+        env: {
+          nodeEnv: process.env.NODE_ENV,
+          hasMongoUri: !!process.env.MONGODB_URI,
+          mongoUriLength: process.env.MONGODB_URI?.length,
+          mongoUriFormat: process.env.MONGODB_URI?.match(/^mongodb(\+srv)?:\/\/([^:]+):([^@]+)@([^/]+)(\/[^?]+)?/) ? 'valid' : 'invalid'
+        }
+      });
+    }
     
     // Retry connection after 5 seconds
     console.log('Retrying connection in 5 seconds...');
