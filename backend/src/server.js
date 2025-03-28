@@ -22,22 +22,37 @@ const connectWithRetry = async () => {
       throw new Error('MONGODB_URI environment variable is not set');
     }
     
-    console.log('MongoDB URI format:', {
-      hasUri: !!process.env.MONGODB_URI,
-      uriLength: process.env.MONGODB_URI.length,
-      startsWithMongo: process.env.MONGODB_URI.startsWith('mongodb'),
-      hasAtlas: process.env.MONGODB_URI.includes('mongodb.net')
+    // Parse MongoDB URI to check format
+    const uri = process.env.MONGODB_URI;
+    const uriParts = uri.match(/^mongodb:\/\/([^:]+):([^@]+)@([^/]+)\/([^?]+)/);
+    
+    if (!uriParts) {
+      throw new Error('Invalid MongoDB URI format');
+    }
+    
+    console.log('MongoDB connection details:', {
+      hasUri: true,
+      uriLength: uri.length,
+      startsWithMongo: uri.startsWith('mongodb'),
+      hasAtlas: uri.includes('mongodb.net'),
+      hasAuth: uri.includes('@'),
+      hasDatabase: uri.includes('/?'),
+      host: uriParts[3],
+      database: uriParts[4]
     });
     
-    await mongoose.connect(process.env.MONGODB_URI, {
+    await mongoose.connect(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 10000, // Increased timeout
       socketTimeoutMS: 45000,
       retryWrites: true,
       w: 'majority',
       retryReads: true,
-      maxPoolSize: 10
+      maxPoolSize: 10,
+      family: 4, // Force IPv4
+      autoIndex: true,
+      autoCreate: true
     });
     
     console.log('Successfully connected to MongoDB');
@@ -50,7 +65,8 @@ const connectWithRetry = async () => {
       env: {
         nodeEnv: process.env.NODE_ENV,
         hasMongoUri: !!process.env.MONGODB_URI,
-        mongoUriLength: process.env.MONGODB_URI?.length
+        mongoUriLength: process.env.MONGODB_URI?.length,
+        mongoUriFormat: process.env.MONGODB_URI?.match(/^mongodb:\/\/([^:]+):([^@]+)@([^/]+)\/([^?]+)/) ? 'valid' : 'invalid'
       }
     });
     
