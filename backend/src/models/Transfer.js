@@ -4,8 +4,7 @@ const transferSchema = new mongoose.Schema({
   code: {
     type: String,
     required: true,
-    unique: true,
-    length: 6
+    unique: true
   },
   content: {
     type: String,
@@ -21,12 +20,21 @@ const transferSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    default: Date.now,
-    expires: 86400 // Document will be automatically deleted after 24 hours
+    default: Date.now
   },
-  used: {
+  expiresAt: {
+    type: Date,
+    required: true
+  },
+  isRead: {
     type: Boolean,
     default: false
+  },
+  readAt: {
+    type: Date
+  },
+  senderEmail: {
+    type: String
   }
 });
 

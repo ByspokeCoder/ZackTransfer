@@ -107,7 +107,9 @@ export default function Send() {
         formData.append('image', image);
         formData.append('type', 'image');
       }
-      formData.append('email', email);
+      if (email) {
+        formData.append('email', email);
+      }
 
       const response = await axios.post(`${api.baseURL}/api/transfers`, formData, {
         headers: {
@@ -119,6 +121,7 @@ export default function Send() {
       setCode(response.data.code);
       setTimeLeft(60);
     } catch (err) {
+      console.error('Error creating transfer:', err);
       setError('Failed to create transfer. Please try again.');
     } finally {
       setLoading(false);

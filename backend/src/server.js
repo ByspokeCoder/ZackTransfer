@@ -6,6 +6,7 @@ const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
 const { sendReadReceipt } = require('./services/emailService');
+const { createTransfer, getTransfer } = require('./controllers/transferController');
 
 // Load environment variables
 dotenv.config();
@@ -88,58 +89,10 @@ const generateCode = () => {
 };
 
 // Create a new transfer
-app.post('/api/transfers', upload.single('image'), (req, res) => {
-  try {
-    const { content, type } = req.body;
-    const code = generateCode();
-    
-    let transferContent = content;
-    let imageUrl = null;
-    
-    if (type === 'image' && req.file) {
-      // Create the full URL for the image
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
-      imageUrl = `${baseUrl}/uploads/${req.file.filename}`;
-      transferContent = imageUrl;
-    }
-    
-    transfers.set(code, {
-      code,
-      content: transferContent,
-      type,
-      imageUrl,
-      createdAt: new Date()
-    });
-
-    // Schedule deletion after 60 seconds
-    scheduleDeletion(code);
-
-    res.status(201).json({ 
-      code,
-      expiresIn: 60
-    });
-  } catch (error) {
-    console.error('Error creating transfer:', error);
-    res.status(500).json({ error: 'Error creating transfer' });
-  }
-});
+app.post('/api/transfers', upload.single('image'), createTransfer);
 
 // Get transfer by code
-app.get('/api/transfers/:code', (req, res) => {
-  try {
-    const { code } = req.params;
-    const transfer = transfers.get(code);
-
-    if (!transfer) {
-      return res.status(404).json({ error: 'Transfer not found or expired' });
-    }
-
-    res.json(transfer);
-  } catch (error) {
-    console.error('Error retrieving transfer:', error);
-    res.status(500).json({ error: 'Error retrieving transfer' });
-  }
-});
+app.get('/api/transfers/:code', getTransfer);
 
 // Test email endpoint
 app.post('/api/test-email', async (req, res) => {
