@@ -16,7 +16,18 @@ dotenv.config();
 const connectWithRetry = async () => {
   try {
     console.log('Attempting to connect to MongoDB...');
-    console.log('MongoDB URI:', process.env.MONGODB_URI ? 'Set' : 'Not set');
+    
+    // Validate MongoDB URI
+    if (!process.env.MONGODB_URI) {
+      throw new Error('MONGODB_URI environment variable is not set');
+    }
+    
+    console.log('MongoDB URI format:', {
+      hasUri: !!process.env.MONGODB_URI,
+      uriLength: process.env.MONGODB_URI.length,
+      startsWithMongo: process.env.MONGODB_URI.startsWith('mongodb'),
+      hasAtlas: process.env.MONGODB_URI.includes('mongodb.net')
+    });
     
     await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
@@ -35,7 +46,12 @@ const connectWithRetry = async () => {
       message: error.message,
       code: error.code,
       name: error.name,
-      stack: error.stack
+      stack: error.stack,
+      env: {
+        nodeEnv: process.env.NODE_ENV,
+        hasMongoUri: !!process.env.MONGODB_URI,
+        mongoUriLength: process.env.MONGODB_URI?.length
+      }
     });
     
     // Retry connection after 5 seconds
@@ -53,12 +69,23 @@ mongoose.connection.on('error', (error) => {
     message: error.message,
     code: error.code,
     name: error.name,
-    stack: error.stack
+    stack: error.stack,
+    env: {
+      nodeEnv: process.env.NODE_ENV,
+      hasMongoUri: !!process.env.MONGODB_URI,
+      mongoUriLength: process.env.MONGODB_URI?.length
+    }
   });
 });
 
 mongoose.connection.on('disconnected', () => {
-  console.log('MongoDB disconnected, attempting to reconnect...');
+  console.log('MongoDB disconnected, attempting to reconnect...', {
+    env: {
+      nodeEnv: process.env.NODE_ENV,
+      hasMongoUri: !!process.env.MONGODB_URI,
+      mongoUriLength: process.env.MONGODB_URI?.length
+    }
+  });
   connectWithRetry();
 });
 
