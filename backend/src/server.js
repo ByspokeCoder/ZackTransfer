@@ -197,7 +197,15 @@ app.get('/health', (req, res) => {
     uptime: process.uptime(),
     mongodb: {
       status: mongoStatus,
-      readyState: mongoose.connection.readyState
+      readyState: mongoose.connection.readyState,
+      uriFormat: {
+        hasUri: !!process.env.MONGODB_URI,
+        uriLength: process.env.MONGODB_URI?.length,
+        startsWithMongo: process.env.MONGODB_URI?.startsWith('mongodb'),
+        hasAtlas: process.env.MONGODB_URI?.includes('mongodb.net'),
+        hasAuth: process.env.MONGODB_URI?.includes('@'),
+        hasDatabase: process.env.MONGODB_URI?.includes('/?')
+      }
     }
   });
 });
