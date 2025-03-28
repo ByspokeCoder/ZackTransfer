@@ -24,7 +24,7 @@ const connectWithRetry = async () => {
     
     // Parse MongoDB URI to check format
     const uri = process.env.MONGODB_URI;
-    const uriParts = uri.match(/^mongodb:\/\/([^:]+):([^@]+)@([^/]+)\/([^?]+)/);
+    const uriParts = uri.match(/^mongodb(\+srv)?:\/\/([^:]+):([^@]+)@([^/]+)(\/[^?]+)?/);
     
     if (!uriParts) {
       throw new Error('Invalid MongoDB URI format');
@@ -37,8 +37,8 @@ const connectWithRetry = async () => {
       hasAtlas: uri.includes('mongodb.net'),
       hasAuth: uri.includes('@'),
       hasDatabase: uri.includes('/?'),
-      host: uriParts[3],
-      database: uriParts[4]
+      host: uriParts[4],
+      database: uriParts[5]?.substring(1) || 'default'
     });
     
     // Simplified connection options
@@ -62,7 +62,7 @@ const connectWithRetry = async () => {
         nodeEnv: process.env.NODE_ENV,
         hasMongoUri: !!process.env.MONGODB_URI,
         mongoUriLength: process.env.MONGODB_URI?.length,
-        mongoUriFormat: process.env.MONGODB_URI?.match(/^mongodb:\/\/([^:]+):([^@]+)@([^/]+)\/([^?]+)/) ? 'valid' : 'invalid'
+        mongoUriFormat: process.env.MONGODB_URI?.match(/^mongodb(\+srv)?:\/\/([^:]+):([^@]+)@([^/]+)(\/[^?]+)?/) ? 'valid' : 'invalid'
       }
     });
     
@@ -86,7 +86,7 @@ mongoose.connection.on('error', (error) => {
       nodeEnv: process.env.NODE_ENV,
       hasMongoUri: !!process.env.MONGODB_URI,
       mongoUriLength: process.env.MONGODB_URI?.length,
-      mongoUriFormat: process.env.MONGODB_URI?.match(/^mongodb:\/\/([^:]+):([^@]+)@([^/]+)\/([^?]+)/) ? 'valid' : 'invalid'
+      mongoUriFormat: process.env.MONGODB_URI?.match(/^mongodb(\+srv)?:\/\/([^:]+):([^@]+)@([^/]+)(\/[^?]+)?/) ? 'valid' : 'invalid'
     }
   });
 });
@@ -97,7 +97,7 @@ mongoose.connection.on('disconnected', () => {
       nodeEnv: process.env.NODE_ENV,
       hasMongoUri: !!process.env.MONGODB_URI,
       mongoUriLength: process.env.MONGODB_URI?.length,
-      mongoUriFormat: process.env.MONGODB_URI?.match(/^mongodb:\/\/([^:]+):([^@]+)@([^/]+)\/([^?]+)/) ? 'valid' : 'invalid'
+      mongoUriFormat: process.env.MONGODB_URI?.match(/^mongodb(\+srv)?:\/\/([^:]+):([^@]+)@([^/]+)(\/[^?]+)?/) ? 'valid' : 'invalid'
     }
   });
   connectWithRetry();
@@ -110,6 +110,9 @@ if (!fs.existsSync(uploadsDir)) {
 }
 
 const app = express();
+
+// Trust proxy for rate limiter
+app.set('trust proxy', 1);
 
 // Enable CORS for all requests - must be first middleware
 app.use((req, res, next) => {
