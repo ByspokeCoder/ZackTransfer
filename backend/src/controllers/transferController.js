@@ -66,9 +66,14 @@ exports.createTransfer = async (req, res) => {
     console.error('Error creating transfer:', {
       error: error.message,
       stack: error.stack,
-      body: req.body
+      body: req.body,
+      mongooseError: error.name === 'ValidationError' ? error.errors : null,
+      code: error.code
     });
-    res.status(500).json({ error: 'Error creating transfer' });
+    res.status(500).json({ 
+      error: 'Error creating transfer',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 

@@ -163,10 +163,15 @@ app.get('/', (req, res) => {
 });
 
 app.get('/health', (req, res) => {
+  const mongoStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
   res.json({ 
     status: 'ok',
     timestamp: new Date().toISOString(),
-    uptime: process.uptime()
+    uptime: process.uptime(),
+    mongodb: {
+      status: mongoStatus,
+      readyState: mongoose.connection.readyState
+    }
   });
 });
 
