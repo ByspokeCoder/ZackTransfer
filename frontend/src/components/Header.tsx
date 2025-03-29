@@ -22,14 +22,19 @@ export default function Header() {
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            color: 'inherit'
+          }}
+          onClick={(e) => {
+            window.location.href = 'https://www.zacktransfer.com';
           }}
         >
-          <Typography variant="h4" sx={{ 
+          <Typography variant="h4" component="span" sx={{ 
             color: '#1C1C1C', 
             fontWeight: 600,
             letterSpacing: '-0.5px',
             fontFamily: 'var(--system-font-display)',
+            cursor: 'pointer',
             '&:hover': {
               color: '#C17F59'
             }
