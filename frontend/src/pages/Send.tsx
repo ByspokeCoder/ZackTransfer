@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { api } from '../api/config';
 import { useTransfer } from '../context/TransferContext';
+import Header from '../components/Header';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -100,88 +101,7 @@ export default function Send() {
       pt: 4,
       px: 3
     }}>
-      <Box sx={{ 
-        mb: 4,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: 3
-      }}>
-        <Box sx={{ 
-          display: 'flex',
-          alignItems: 'center',
-          gap: 2
-        }}>
-          <Link 
-            to="/"
-            style={{ 
-              textDecoration: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
-          >
-            <Typography variant="h4" sx={{ 
-              color: '#1C1C1C', 
-              fontWeight: 600,
-              letterSpacing: '-0.5px',
-              fontFamily: 'var(--system-font-display)',
-              '&:hover': {
-                color: '#C17F59'
-              }
-            }}>
-              ZackTransfer
-            </Typography>
-            <img 
-              src="/images/Logo1.png" 
-              alt="ZackTransfer Logo" 
-              style={{ 
-                width: '40px',
-                height: 'auto'
-              }} 
-            />
-          </Link>
-        </Box>
-        
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button
-            variant="contained"
-            component={Link}
-            to="/"
-            sx={{ 
-              bgcolor: '#C17F59',
-              '&:hover': {
-                bgcolor: '#A66B48'
-              },
-              textTransform: 'none',
-              borderRadius: '8px',
-              px: 4,
-              py: 1
-            }}
-          >
-            Send
-          </Button>
-          <Button
-            variant="outlined"
-            component={Link}
-            to="/receive"
-            sx={{ 
-              borderColor: '#C17F59',
-              color: '#C17F59',
-              '&:hover': {
-                borderColor: '#A66B48',
-                bgcolor: 'rgba(193, 127, 89, 0.04)'
-              },
-              textTransform: 'none',
-              borderRadius: '8px',
-              px: 4,
-              py: 1
-            }}
-          >
-            Receive
-          </Button>
-        </Box>
-      </Box>
+      <Header />
       
       <Paper 
         elevation={3} 

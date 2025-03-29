@@ -15,6 +15,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import axios from 'axios';
 import { APP_NAME } from '../api/config';
 import { api } from '../api/config';
+import Header from '../components/Header';
 
 export default function Receive() {
   const [code, setCode] = useState('');
@@ -81,75 +82,7 @@ export default function Receive() {
       pt: 4,
       px: 3
     }}>
-      <Box sx={{ 
-        mb: 4,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: 3
-      }}>
-        <Box sx={{ 
-          display: 'flex',
-          alignItems: 'center',
-          gap: 2
-        }}>
-          <Typography variant="h4" sx={{ 
-            color: '#1C1C1C', 
-            fontWeight: 600,
-            letterSpacing: '-0.5px',
-            fontFamily: 'var(--system-font-display)'
-          }}>
-            ZackTransfer
-          </Typography>
-          <img 
-            src="/images/Logo1.png" 
-            alt="ZackTransfer Logo" 
-            style={{ 
-              width: '40px',
-              height: 'auto'
-            }} 
-          />
-        </Box>
-        
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button
-            variant="outlined"
-            component={RouterLink}
-            to="/"
-            sx={{ 
-              borderColor: '#C17F59',
-              color: '#C17F59',
-              '&:hover': {
-                borderColor: '#A66B48',
-                bgcolor: 'rgba(193, 127, 89, 0.04)'
-              },
-              textTransform: 'none',
-              borderRadius: '8px',
-              px: 4,
-              py: 1
-            }}
-          >
-            Send
-          </Button>
-          <Button
-            variant="contained"
-            component={RouterLink}
-            to="/receive"
-            sx={{ 
-              bgcolor: '#C17F59',
-              '&:hover': {
-                bgcolor: '#A66B48'
-              },
-              textTransform: 'none',
-              borderRadius: '8px',
-              px: 4,
-              py: 1
-            }}
-          >
-            Receive
-          </Button>
-        </Box>
-      </Box>
+      <Header />
       
       <Paper 
         elevation={3} 
