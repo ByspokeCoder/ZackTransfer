@@ -15,13 +15,14 @@ export default function Header() {
         alignItems: 'center',
         gap: 2
       }}>
-        <Link 
-          to="/"
+        <a 
+          href="https://www.zacktransfer.com"
           style={{ 
             textDecoration: 'none',
             display: 'flex',
             alignItems: 'center',
-            gap: '8px'
+            gap: '8px',
+            cursor: 'pointer'
           }}
         >
           <Typography variant="h4" sx={{ 
@@ -43,7 +44,7 @@ export default function Header() {
               height: 'auto'
             }} 
           />
-        </Link>
+        </a>
       </Box>
       
       <Box sx={{ display: 'flex', gap: 2 }}>
