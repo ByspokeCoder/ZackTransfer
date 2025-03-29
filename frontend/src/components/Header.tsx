@@ -15,17 +15,15 @@ export default function Header() {
         alignItems: 'center',
         gap: 2
       }}>
-        <MuiLink 
-          href="https://www.zacktransfer.com"
-          underline="none"
-          sx={{ 
+        <a 
+          href="/"
+          style={{ 
+            textDecoration: 'none',
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
             cursor: 'pointer',
-            '&:hover': {
-              color: '#C17F59'
-            }
+            color: 'inherit'
           }}
         >
           <Typography variant="h4" sx={{ 
@@ -33,6 +31,9 @@ export default function Header() {
             fontWeight: 600,
             letterSpacing: '-0.5px',
             fontFamily: 'var(--system-font-display)',
+            '&:hover': {
+              color: '#C17F59'
+            }
           }}>
             ZackTransfer
           </Typography>
@@ -44,7 +45,7 @@ export default function Header() {
               height: 'auto'
             }} 
           />
-        </MuiLink>
+        </a>
       </Box>
       
       <Box sx={{ display: 'flex', gap: 2 }}>
