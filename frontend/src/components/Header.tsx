@@ -1,4 +1,4 @@
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, Link as MuiLink } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 export default function Header() {
@@ -15,29 +15,24 @@ export default function Header() {
         alignItems: 'center',
         gap: 2
       }}>
-        <a 
+        <MuiLink 
           href="https://www.zacktransfer.com"
-          style={{ 
-            textDecoration: 'none',
+          underline="none"
+          sx={{ 
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
             cursor: 'pointer',
-            color: 'inherit'
-          }}
-          onClick={(e) => {
-            window.location.href = 'https://www.zacktransfer.com';
+            '&:hover': {
+              color: '#C17F59'
+            }
           }}
         >
-          <Typography variant="h4" component="span" sx={{ 
+          <Typography variant="h4" sx={{ 
             color: '#1C1C1C', 
             fontWeight: 600,
             letterSpacing: '-0.5px',
             fontFamily: 'var(--system-font-display)',
-            cursor: 'pointer',
-            '&:hover': {
-              color: '#C17F59'
-            }
           }}>
             ZackTransfer
           </Typography>
@@ -49,7 +44,7 @@ export default function Header() {
               height: 'auto'
             }} 
           />
-        </a>
+        </MuiLink>
       </Box>
       
       <Box sx={{ display: 'flex', gap: 2 }}>
