@@ -112,22 +112,35 @@ export default function Send() {
           alignItems: 'center',
           gap: 2
         }}>
-          <Typography variant="h4" sx={{ 
-            color: '#1C1C1C', 
-            fontWeight: 600,
-            letterSpacing: '-0.5px',
-            fontFamily: 'var(--system-font-display)'
-          }}>
-            ZackTransfer
-          </Typography>
-          <img 
-            src="/images/Logo1.png" 
-            alt="ZackTransfer Logo" 
+          <Link 
+            to="/"
             style={{ 
-              width: '40px',
-              height: 'auto'
-            }} 
-          />
+              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+          >
+            <Typography variant="h4" sx={{ 
+              color: '#1C1C1C', 
+              fontWeight: 600,
+              letterSpacing: '-0.5px',
+              fontFamily: 'var(--system-font-display)',
+              '&:hover': {
+                color: '#C17F59'
+              }
+            }}>
+              ZackTransfer
+            </Typography>
+            <img 
+              src="/images/Logo1.png" 
+              alt="ZackTransfer Logo" 
+              style={{ 
+                width: '40px',
+                height: 'auto'
+              }} 
+            />
+          </Link>
         </Box>
         
         <Box sx={{ display: 'flex', gap: 2 }}>
