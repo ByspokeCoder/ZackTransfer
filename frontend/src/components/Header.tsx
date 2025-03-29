@@ -16,7 +16,7 @@ export default function Header() {
         gap: 2
       }}>
         <a 
-          href="/"
+          href="https://www.zacktransfer.com"
           style={{ 
             textDecoration: 'none',
             display: 'flex',
